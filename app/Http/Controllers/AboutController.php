@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class CarController extends Controller
+class AboutController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('pages.cars.index');
+        return view('pages.about.index');
     }
 
     /**
@@ -35,7 +35,7 @@ class CarController extends Controller
      */
     public function show(string $id)
     {
-        return view('pages.cars.detail', ['id' => $id]);
+        //
     }
 
     /**

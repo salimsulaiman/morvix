@@ -93,9 +93,10 @@
                 </ul>
 
                 <div class="gap-4 items-center hidden xlg:flex">
-                    <button @click="openSearch=true" aria-label="Buka pencarian">
-                        <i data-feather="search" class="w-6 h-6 text-gray-200 hover:text-lime-400 cursor-pointer"></i>
-                    </button>
+                    <a href="#"
+                        class="font-medium bg-lime-600 text-white px-6 py-2 rounded-full text-base hover:bg-lime-700 transition-colors duration-150 ease-in-out">
+                        Log In
+                    </a>
                 </div>
             </div>
         </div>
