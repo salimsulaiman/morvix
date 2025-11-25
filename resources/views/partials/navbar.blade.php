@@ -16,23 +16,23 @@
                 </a>
                 <ul class="hidden xlg:flex gap-6 relative">
                     <li>
-                        <a href="#"
+                        <a href="{{ route('home.index') }}"
                             class="font-semibold transition-colors duration-150 ease-in-out
                             {{ request()->is('/') ? 'text-lime-400 hover:text-lime-300' : 'text-gray-200 hover:text-lime-400' }}">
                             Beranda
                         </a>
                     </li>
                     <li>
-                        <a href="#"
+                        <a href="{{ route('cars.index') }}"
                             class="font-semibold transition-colors duration-150 ease-in-out
-                            {{ request()->is('about') ? 'text-lime-400 hover:text-lime-300' : 'text-gray-200 hover:text-lime-400' }}">
+                            {{ request()->is('cars') ? 'text-lime-400 hover:text-lime-300' : 'text-gray-200 hover:text-lime-400' }}">
                             Mobil
                         </a>
                     </li>
                     <li>
                         <a href="#"
                             class="font-semibold transition-colors duration-150 ease-in-out
-                        {{ request()->is('about') ? 'text-lime-400 hover:text-lime-300' : 'text-gray-200 hover:text-lime-400' }}">
+                        {{ request()->is('motorcycle') ? 'text-lime-400 hover:text-lime-300' : 'text-gray-200 hover:text-lime-400' }}">
                             Motor
                         </a>
                     </li>
@@ -77,9 +77,9 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="#"
+                        <a href="{{ route('about.index') }}"
                             class="font-semibold transition-colors duration-150 ease-in-out
-                            {{ request()->is('portfolio*') ? 'text-lime-400 hover:text-lime-300' : 'text-gray-200 hover:text-lime-400' }}">
+                            {{ request()->is('about*') ? 'text-lime-400 hover:text-lime-300' : 'text-gray-200 hover:text-lime-400' }}">
                             Tentang Kami
                         </a>
                     </li>

@@ -129,7 +129,7 @@
     </section>
     <section class="w-full bg-white">
         <div class="max-w-7xl mx-auto px-8 pt-8 pb-8">
-            <h2 class="font-bold text-2xl uppercase mb-4 max-w-md">Featured Vehicles</h2>
+            <h2 class="font-bold text-2xl uppercase mb-4 max-w-md text-slate-900">Featured Vehicles</h2>
             <div class="flex justify-between gap-8 items-end">
                 <p class="text-sm text-slate-700 max-w-2xl">Temukan mobil dan motor pilihan terbaik kami — dipilih khusus
                     untuk
@@ -242,7 +242,8 @@
     </section>
     <section class="bg-white w-full max-w-7xl mx-auto px-8 pt-16 pb-8">
         <div class="flex flex-col gap-4">
-            <h1 class="text-4xl font-medium text-center">Our <span class="font-bold text-lime-600">Achievment</span></h1>
+            <h1 class="text-4xl font-medium text-center text-slate-900">Our <span
+                    class="font-bold text-lime-600">Achievment</span></h1>
             <p class="text-center text-slate-700">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla,
                 repellat!</p>
             <div class="mx-auto grid grid-cols-3 justify-center mt-8 gap-20">
@@ -287,7 +288,7 @@
     </section>
     <section class="w-full bg-white">
         <div class="max-w-7xl mx-auto px-8 pt-8 pb-16">
-            <h2 class="font-bold text-2xl uppercase mb-4 max-w-sm">Find the Perfect Car for Your Trip</h2>
+            <h2 class="font-bold text-2xl uppercase mb-4 max-w-sm text-slate-900">Find the Perfect Car for Your Trip</h2>
             <div class="flex justify-between gap-8 items-end">
                 <p class="text-sm text-slate-700 max-w-2xl">Choose from a wide range of cars — from compact city rides to
                     premium comfort. Book easily and start your journey with <span
@@ -443,7 +444,7 @@
     </section>
     <section class="bg-white w-full">
         <div class="mx-auto max-w-7xl px-8 pt-16 pb-8">
-            <h2 class="font-bold text-2xl uppercase mb-4 max-w-xs">What Our Customers Say</h2>
+            <h2 class="font-bold text-2xl uppercase mb-4 max-w-xs text-slate-900">What Our Customers Say</h2>
             <div class="flex justify-between gap-8 items-end">
                 <p class="text-sm text-slate-700 max-w-2xl">Real stories from customers who have enjoyed our car and
                     motorcycle rental services.</p>
@@ -520,7 +521,7 @@
     </section>
     <section class="bg-white w-full">
         <div class="mx-auto max-w-7xl px-8 pt-8 pb-16">
-            <h2 class="font-bold text-2xl uppercase mb-4 max-w-xs">Latest Tips & Travel Insights</h2>
+            <h2 class="font-bold text-2xl uppercase mb-4 max-w-xs text-slate-900">Latest Tips & Travel Insights</h2>
             <div class="flex justify-between gap-8 items-end">
                 <p class="text-sm text-slate-700 max-w-2xl">Stay updated with our best car and motorcycle rental guides,
                     travel advice, and maintenance tips.</p>
