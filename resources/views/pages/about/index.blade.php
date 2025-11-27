@@ -1,18 +1,18 @@
 @extends('components.layouts.app')
 
 @section('content')
-    <section class="max-w-7xl mx-auto px-8 mt-40">
+    <section class="max-w-7xl mx-auto px-8 mt-56 relative">
         <div class="w-full rounded-2xl h-[300px] bg-slate-800 p-16 flex gap-8 items-center relative bg-center bg-cover"
             style="background-image: url('{{ asset('assets/images/background-about.jpg') }}');">
             <div class="flex flex-col gap-4">
-                <h1 class="text-4xl text-lime-500 font-semibold">About Us</h1>
+                <h1 class="text-4xl text-lime-500 font-semibold">About us</h1>
                 <p class="text-slate-300 max-w-lg">Welcome to Morvix, your trusted partner in premium car rentals. We are
                     dedicated to
                     providing exceptional
                     service and a diverse fleet of vehicles to meet your travel needs.</p>
             </div>
             <img src="{{ asset('assets/images/product/car/off-road.png') }}" alt=""
-                class="w-[620px] absolute right-0 bottom-0">
+                class="w-[640px] absolute right-0 bottom-0">
         </div>
     </section>
     <div class="w-full max-w-7xl px-8 py-12 mx-auto flex items-center justify-center gap-8">
@@ -27,10 +27,10 @@
     </div>
     <section class="max-w-7xl mx-auto px-8 pb-16 flex gap-16">
         <div class="flex flex-col gap-4 w-1/2">
-            <h2 class="font-bold text-2xl uppercase max-w-md text-slate-900">Get Inspiration</h2>
-            <p class="text-sm text-slate-700">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed culpa quidem
-                rerum eos harum quo, sapiente iure
-                minus odio consequuntur ullam nihil quibusdam obcaecati tempore dolor nemo veniam amet nostrum.</p>
+            <h2 class="font-bold text-2xl uppercase max-w-md text-slate-900">Insight Through Achievement</h2>
+            <p class="text-sm text-slate-700">Discover fresh insights that inspire you to view opportunities from a broader
+                angle. Our achievements and data reflect our commitment to delivering meaningful value and building lasting
+                trust.</p>
             <div class="w-full grid grid-cols-2 gap-4 mt-4 gap-y-6">
                 <div class="flex flex-col gap-2">
                     <h3 class="text-4xl text-slate-900 font-bold">5.200+<span class="text-xs text-lime-600 font-bold">
