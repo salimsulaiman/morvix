@@ -2,58 +2,107 @@
 
 @section('content')
     <section class="w-full bg-cover bg-no-repeat bg-center relative"
-        style="background-image: url('{{ asset('assets/images/articles/fortuner.jpg') }}');">
+        style="background-image: url('{{ asset('assets/images/background-cars.jpg') }}');">
         <div class="inset-0 absolute bg-black/50"></div>
         <div
-            class="max-w-7xl mx-auto px-8 min-h-[400px] pt-32 flex flex-col items-center justify-center h-full z-10 relative gap-4">
-            <h1 class="text-5xl font-medium text-white max-w-2xl leading-relaxed text-center">Perjalanan <span
-                    class="text-lime-500 font-bold">Nyaman</span>, Pengalaman Tak Terlupakan
+            class="relative z-10 mx-auto flex min-h-[500px] max-w-7xl flex-col items-center justify-center gap-5 px-8 pt-20 text-center">
+            <h5 class="uppercase text-xs px-4 py-1 bg-lime-600 text-white rounded-full">Mobil</h5>
+            <h1 class="max-w-3xl text-3xl font-semibold leading-tight text-white uppercase">
+                Rental Mobil <span class="font-bold text-lime-500">Nyaman</span> untuk
+                Setiap Perjalanan
             </h1>
-            <p class="text-base text-gray-200 max-w-md text-center">Temukan layanan rental mobil dan motor terbaik dengan
-                pelayanan
-                unggulan dan harga ramah kantong.</p>
-            <div class="w-full mt-24">
 
-            </div>
+            <p class="max-w-xl text-base text-gray-200">
+                Pilihan mobil terbaik dengan kondisi prima, proses mudah,
+                dan harga yang bersahabat untuk kebutuhan perjalanan Anda.
+            </p>
         </div>
     </section>
     <div class="max-w-7xl mx-auto px-8 py-16" x-data="{
-        mainPhoto: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop',
+        mainPhoto: '{{ asset('storage/' . ($car->images->first()->image_url ?? '')) }}',
         photos: [
-            'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=600&fit=crop'
+            @foreach ($car->images as $img)
+            '{{ asset('storage/' . $img->image_url) }}', @endforeach
         ],
         adultCount: 1,
         childCount: 0,
-        pickupDate: '',
-        returnDate: '',
+        maxSeats: {{ $car->seats ?? 6 }},
+        days: 1,
+        pricePerDay: {{ $car->final_daily_price ?? ($car->daily_price ?? 350000) }},
+        startDatePicker: null,
+        endDatePicker: null,
+    
+        init() {
+            this.$nextTick(() => {
+                this.initializeDatePickers();
+            });
+        },
+    
+        initializeDatePickers() {
+            const startEl = this.$refs.startDate;
+            const endEl = this.$refs.endDate;
+    
+            if (startEl && endEl) {
+                this.startDatePicker = new Datepicker(startEl, {
+                    autohide: true,
+                    format: 'mm/dd/yyyy',
+                    minDate: new Date(),
+                });
+                this.endDatePicker = new Datepicker(endEl, {
+                    autohide: true,
+                    format: 'mm/dd/yyyy',
+                    minDate: new Date(),
+                });
+    
+                startEl.addEventListener('changeDate', (e) => {
+                    this.calculateDays();
+                });
+    
+                endEl.addEventListener('changeDate', (e) => {
+                    this.calculateDays();
+                });
+            }
+        },
         changePhoto(photo) {
             this.mainPhoto = photo;
         },
         incrementAdult() {
-            if (this.adultCount < 6) this.adultCount++;
+            const remainingSeats = this.maxSeats - this.childCount;
+            if (this.adultCount < remainingSeats) this.adultCount++;
         },
         decrementAdult() {
             if (this.adultCount > 1) this.adultCount--;
         },
         incrementChild() {
-            if (this.childCount < 4) this.childCount++;
+            const remainingSeats = this.maxSeats - this.adultCount;
+            if (this.childCount < remainingSeats) this.childCount++;
         },
         decrementChild() {
             if (this.childCount > 0) this.childCount--;
         },
         calculateTotal() {
-            const days = this.pickupDate && this.returnDate ?
-                Math.ceil((new Date(this.returnDate) - new Date(this.pickupDate)) / (1000 * 60 * 60 * 24)) : 1;
-            return days > 0 ? days * 350000 : 350000;
+            return this.days * this.pricePerDay;
+        },
+        calculateDays() {
+            const startDate = this.startDatePicker?.getDate();
+            const endDate = this.endDatePicker?.getDate();
+    
+            if (startDate && endDate) {
+                const diffTime = endDate - startDate;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+                this.days = diffDays > 0 ? diffDays : 1;
+            }
         }
+    
     }">
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
             <!-- Main Content -->
             <div class="lg:col-span-2">
                 <!-- Photo Gallery -->
                 <div class="overflow-hidden mb-6">
-                    <div class="aspect-video bg-slate-200">
+                    <div class="aspect-video bg-slate-200 rounded-2xl">
                         <img :src="mainPhoto" alt="Main Car Photo" class="w-full h-full object-cover">
                     </div>
                     <div class="py-4 flex gap-3">
@@ -71,7 +120,7 @@
                 <div class="mb-8 w-full">
                     <div class="flex items-start justify-between mb-4">
                         <div>
-                            <h1 class="text-3xl font-bold text-slate-800 mb-2">Toyota Avanza</h1>
+                            <h1 class="text-3xl font-bold text-slate-800 mb-2">{{ $car->vehicleModel->name }}</h1>
                             <div class="flex items-center gap-4 text-slate-600">
                                 <span class="flex items-center gap-1">
                                     <i data-feather="star" class="w-5 h-5 text-lime-500 fill-current"></i>
@@ -84,8 +133,22 @@
                                 </span>
                             </div>
                         </div>
+                        @php
+                            $price = $car->final_daily_price ?? ($car->daily_price ?? 350000);
+
+                            if ($price >= 1000) {
+                                if ($price >= 1000000) {
+                                    $displayPrice = round($price / 1000000, 1) . 'M';
+                                } else {
+                                    $displayPrice = round($price / 1000, 1) . 'K';
+                                }
+                            } else {
+                                $displayPrice = $price;
+                            }
+                        @endphp
+
                         <div class="text-right">
-                            <p class="text-3xl font-bold text-lime-600">Rp 350K</p>
+                            <p class="text-3xl font-bold text-lime-600">Rp {{ $displayPrice }}</p>
                             <p class="text-sm text-slate-500">per hari</p>
                         </div>
                     </div>
@@ -146,8 +209,9 @@
                         Lokasi Pengambilan
                     </h2>
                     <div class="aspect-video bg-slate-200 rounded-lg mb-3">
-                        <img src="https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/106.8456,-6.2088,12,0/800x400@2x?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw"
-                            alt="Map" class="w-full h-full object-cover rounded-lg">
+                        <iframe src="{{ $car->location->map_url }}" class="w-full h-full rounded-lg border-0"
+                            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
                     </div>
                     <p class="text-slate-600">
                         <i data-feather="navigation" class="w-4 h-4 inline text-lime-600"></i>
@@ -225,13 +289,13 @@
                         Form Booking
                     </h2>
 
-                    <div id="date-range-picker" date-rangepicker class="flex flex-col mb-4 gap-4">
+                    <div id="date-range-picker" class="flex flex-col mb-4 gap-4">
                         <div class="relative">
                             <label class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
                                 <i data-feather="calendar" class="w-4 h-4 inline text-lime-600"></i>
                                 Tanggal Pengambilan
                             </label>
-                            <input id="datepicker-range-start" name="start" type="text"
+                            <input id="datepicker-range-start" name="start" type="text" x-ref="startDate"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Select date start">
                         </div>
@@ -240,7 +304,7 @@
                                 <i data-feather="calendar" class="w-4 h-4 inline text-lime-600"></i>
                                 Tanggal Pengembalian
                             </label>
-                            <input id="datepicker-range-end" name="end" type="text"
+                            <input id="datepicker-range-end" name="end" type="text" x-ref="endDate"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Select date end">
                         </div>
@@ -289,15 +353,16 @@
                     <!-- Price Summary -->
                     <div class="border-t border-slate-200 pt-4 mb-4">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-slate-600">Rp 350.000 x <span
-                                    x-text="pickupDate && returnDate ? Math.max(1, Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24))) : 1"></span>
-                                hari</span>
-                            <span class="font-semibold text-slate-800"
-                                x-text="'Rp ' + calculateTotal().toLocaleString('id-ID')"></span>
+                            <span class="text-slate-600">
+                                <span x-text="'Rp ' + pricePerDay.toLocaleString('id-ID')"></span> x
+                                <span x-text="days > 0 ? days : 1"></span>
+                                hari
+                            </span>
                         </div>
                         <div class="flex justify-between items-center text-lg font-bold">
-                            <span class="text-slate-800">Total</span>
-                            <span class="text-lime-600" x-text="'Rp ' + calculateTotal().toLocaleString('id-ID')"></span>
+                            <span class="text-slate-800">Total Harga</span>
+                            <span class="text-lime-600"
+                                x-text="calculateTotal().toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })"></span>
                         </div>
                     </div>
 

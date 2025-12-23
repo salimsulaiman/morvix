@@ -18,9 +18,19 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
+            $table->string('id_number')->nullable();
+            $table->string('id_photo')->nullable();
+            $table->string('sim_number')->nullable();
+            $table->string('sim_photo')->nullable();
+            $table->date('sim_expired_at')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->enum('gender', ['male', 'female'])->nullable();
+            $table->boolean('is_verified')->default(false);
+            $table->dateTime('verified_at')->nullable();
             $table->enum('role', ['customer', 'admin', 'operator'])->default('customer');
             $table->timestamps();
         });
+
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();

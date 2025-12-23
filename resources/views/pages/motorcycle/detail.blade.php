@@ -2,19 +2,20 @@
 
 @section('content')
     <section class="w-full bg-cover bg-no-repeat bg-center relative"
-        style="background-image: url('{{ asset('assets/images/articles/fortuner.jpg') }}');">
+        style="background-image: url('{{ asset('assets/images/background-motorcycle.jpg') }}');">
         <div class="inset-0 absolute bg-black/50"></div>
         <div
-            class="max-w-7xl mx-auto px-8 min-h-[400px] pt-32 flex flex-col items-center justify-center h-full z-10 relative gap-4">
-            <h1 class="text-5xl font-medium text-white max-w-2xl leading-relaxed text-center">Perjalanan <span
-                    class="text-lime-500 font-bold">Nyaman</span>, Pengalaman Tak Terlupakan
+            class="relative z-10 mx-auto flex min-h-[500px] max-w-7xl flex-col items-center justify-center gap-5 px-8 pt-20 text-center">
+            <h5 class="uppercase text-xs px-4 py-1 bg-lime-600 text-white rounded-full">Motor</h5>
+            <h1 class="max-w-3xl text-3xl font-semibold leading-tight text-white uppercase">
+                Rental Motor <span class="font-bold text-lime-500">Nyaman & Praktis</span> untuk
+                Aktivitas Anda
             </h1>
-            <p class="text-base text-gray-200 max-w-md text-center">Temukan layanan rental mobil dan motor terbaik dengan
-                pelayanan
-                unggulan dan harga ramah kantong.</p>
-            <div class="w-full mt-24">
 
-            </div>
+            <p class="max-w-xl text-base text-gray-200">
+                Tersedia berbagai pilihan motor terawat, pemakaian mudah,
+                dan tarif terjangkau untuk menemani mobilitas harian Anda.
+            </p>
         </div>
     </section>
     <div class="max-w-7xl mx-auto px-8 py-16" x-data="{

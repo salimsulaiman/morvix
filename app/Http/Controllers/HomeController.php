@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vehicle;
+use App\Models\VehicleModel;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -11,9 +13,38 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $vehicles = Vehicle::with([
+            'vehicleModel.brand',
+            'images',
+            'location',
+            'bookings',
+        ])->get();
+
+        $motorcycles = Vehicle::with([
+            'vehicleModel.brand',
+            'images',
+            'location',
+            'bookings',
+        ])->whereHas('vehicleModel', function ($query) {
+            $query->where('type', 'motorcycle');
+        })->inRandomOrder()
+            ->take(4)
+            ->get();
+
+        $cars = Vehicle::with([
+            'vehicleModel.brand',
+            'images',
+            'location',
+            'bookings',
+        ])->whereHas('vehicleModel', function ($query) {
+            $query->where('type', 'car');
+        })->inRandomOrder()
+            ->take(4)
+            ->get();
+
         return view('pages.home.index', [
             'title' => 'Home'
-        ]);
+        ], compact('vehicles', 'motorcycles', 'cars'));
     }
 
     /**

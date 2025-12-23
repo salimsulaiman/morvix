@@ -4,12 +4,13 @@
 
 @plugin "flowbite/plugin";
 
+
+@source "../../node_modules/flowbite";
+@source "../../node_modules/flowbite-datepicker";
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
-@source "../../node_modules/flowbite";
-@source "../../node_modules/flowbite-datepicker";
 
 @theme {
   --color-scheme: light;
@@ -40,6 +41,20 @@
     --color-concrete-800: #464646;
     --color-concrete-900: #3d3d3d;
     --color-concrete-950: #292929;
+
+    --color-geyser-50: #f6f8f9;
+    --color-geyser-100: #ebf0f3;
+    --color-geyser-200: #d3dde3;
+    --color-geyser-300: #aec1cb;
+    --color-geyser-400: #81a0af;
+    --color-geyser-500: #628395;
+    --color-geyser-600: #4d6b7c;
+    --color-geyser-700: #3f5665;
+    --color-geyser-800: #374955;
+    --color-geyser-900: #313f49;
+    --color-geyser-950: #212a30;
+
+
 }
 
 [x-cloak] { display: none !important; }

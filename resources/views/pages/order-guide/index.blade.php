@@ -10,8 +10,8 @@
                     dedicated to providing exceptional
                     service and a diverse fleet of vehicles to meet your travel needs.</p>
             </div>
-            <img src="{{ asset('assets/images/product/half-mpv.png') }}" alt=""
-                class="w-[520px] absolute left-0 -top-16">
+            <img src="{{ asset('assets/images/product/half-suv-car.png') }}" alt=""
+                class="w-[540px] absolute left-0 -bottom-6">
         </div>
     </section>
     <div class="min-h-screen bg-white py-16 mt-12">

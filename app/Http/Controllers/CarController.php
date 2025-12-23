@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vehicle;
+use App\Models\VehicleModel;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
@@ -33,10 +35,18 @@ class CarController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $code)
     {
-        return view('pages.cars.detail', ['id' => $id]);
+        $car = Vehicle::with([
+            'vehicleModel.brand',
+            'images',
+            'location',
+            'bookings'
+        ])->where('code', $code)->firstOrFail();
+
+        return view('pages.cars.detail', compact('car'));
     }
+
 
     /**
      * Show the form for editing the specified resource.

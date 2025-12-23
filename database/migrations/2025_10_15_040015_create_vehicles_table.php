@@ -13,20 +13,25 @@ return new class extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['car', 'motorcycle']);
-            $table->string('brand');
-            $table->string('model');
+            $table->foreignId('vehicle_model_id')->constrained()->cascadeOnDelete();
+
             $table->string('license_plate')->unique();
             $table->year('year');
             $table->string('color');
+
             $table->enum('transmission', ['manual', 'automatic']);
             $table->enum('fuel_type', ['gasoline', 'diesel', 'electric']);
-            $table->integer('seats')->nullable(); // hanya untuk mobil
+
+            $table->decimal('fuel_tank_capacity', 5, 1)->nullable();
+            $table->decimal('battery_capacity_kwh', 5, 1)->nullable();
+
+            $table->integer('seats')->nullable();
             $table->decimal('daily_price', 12, 2);
             $table->decimal('hourly_price', 12, 2);
             $table->decimal('deposit_amount', 12, 2);
+
+            $table->foreignId('location_id')->constrained()->cascadeOnDelete();
             $table->text('description')->nullable();
-            $table->boolean('is_available')->default(true);
             $table->enum('status', ['available', 'rented', 'maintenance'])->default('available');
             $table->timestamps();
         });
