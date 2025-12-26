@@ -11,7 +11,8 @@ class VehicleModel extends Model
         'brand_id',
         'name',
         'slug',
-        'type'
+        'type',
+        'vehicle_category_id',
     ];
     public function brand()
     {
@@ -21,6 +22,11 @@ class VehicleModel extends Model
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(VehicleCategory::class, 'vehicle_category_id');
     }
 
     protected static function booted()

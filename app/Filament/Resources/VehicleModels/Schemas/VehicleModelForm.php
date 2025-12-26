@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\VehicleModels\Schemas;
 
+use Dom\Text;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -51,7 +53,32 @@ class VehicleModelForm
                             ->searchable()
                             ->preload()
                             ->required()
-                            ->columnSpan(1)
+                            ->columnSpan(1),
+                        Select::make('vehicle_category_id')
+                            ->label('Vehicle Category')
+                            ->relationship('category', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->columnSpanFull()
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->label('Category Name')
+                                    ->maxLength(255)
+                                    ->required()
+                                    ->columnSpan(2),
+                                TextInput::make('slug')
+                                    ->label('Slug')
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(255)
+                                    ->required()
+                                    ->columnSpan(2),
+                                Textarea::make('description')
+                                    ->label('Description')
+                                    ->rows(4)
+                                    ->columnSpanFull()
+                                    ->maxLength(500),
+                            ]),
                     ])
             ]);
     }

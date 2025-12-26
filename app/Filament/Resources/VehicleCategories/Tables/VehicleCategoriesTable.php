@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\VehicleModels\Tables;
+namespace App\Filament\Resources\VehicleCategories\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -8,40 +8,31 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Pest\Support\View;
 
-class VehicleModelsTable
+class VehicleCategoriesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('brand.name')
-                    ->label('Brand Name')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('name')
-                    ->label('Model Name')
+                    ->label('Nama Kategori')
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('type')
-                    ->label('Vehicle Type')
-                    ->formatStateUsing(fn($state) => Str::title($state))
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('slug')
+                    ->label('Slug')
+                    ->limit(50)
+                    ->wrap(),
+
+                TextColumn::make('description')
+                    ->label('Deskripsi')
+                    ->limit(50)
+                    ->wrap(),
             ])
             ->filters([
-                SelectFilter::make('type')
-                    ->label('Vehicle Type')
-                    ->options([
-                        'car' => 'Car',
-                        'motorcycle' => 'Motorcycle',
-                    ]),
+                //
             ])
             ->recordActions([
                 ViewAction::make(),

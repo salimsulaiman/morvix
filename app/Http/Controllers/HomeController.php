@@ -18,7 +18,7 @@ class HomeController extends Controller
             'images',
             'location',
             'bookings',
-        ])->get();
+        ])->where('status', 'available')->get();
 
         $motorcycles = Vehicle::with([
             'vehicleModel.brand',
@@ -28,7 +28,7 @@ class HomeController extends Controller
         ])->whereHas('vehicleModel', function ($query) {
             $query->where('type', 'motorcycle');
         })->inRandomOrder()
-            ->take(4)
+            ->take(4)->where('status', 'available')
             ->get();
 
         $cars = Vehicle::with([
@@ -40,6 +40,7 @@ class HomeController extends Controller
             $query->where('type', 'car');
         })->inRandomOrder()
             ->take(4)
+            ->where('status', 'available')
             ->get();
 
         return view('pages.home.index', [

@@ -68,17 +68,23 @@ class Vehicle extends Model
         );
     }
 
+    public function features()
+    {
+        return $this->belongsToMany(
+            Feature::class,
+            'vehicle_features'
+        );
+    }
+
     public function activeDiscounts()
     {
         return $this->discounts()
             ->where('is_active', true)
             ->where(function ($q) {
-                $q->whereNull('start_at')
-                    ->orWhere('start_at', '<=', Carbon::now('Asia/Jakarta'));
+                $q->whereNull('start_at')->orWhere('start_at', '<=', now());
             })
             ->where(function ($q) {
-                $q->whereNull('end_at')
-                    ->orWhere('end_at', '>=', Carbon::now('Asia/Jakarta'));
+                $q->whereNull('end_at')->orWhere('end_at', '>=', now());
             });
     }
 

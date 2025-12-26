@@ -430,13 +430,14 @@
                     </div>
                 </div>
                 <div class="w-full col-span-full grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                    @for ($i = 0; $i < 4; $i++)
+                    @foreach ($cars as $car)
                         <div
                             class="w-full bg-none sm:bg-white rounded-none sm:rounded-3xl aspect-auto overflow-hidden relative group sm:shadow">
                             <div class="w-full h-full relative overflow-hidden px-2 sm:px-6 py-2 sm:py-6">
                                 <div class="w-full flex gap-2">
                                     <div class="flex flex-col w-full gap-1">
-                                        <h4 class="text-slate-900 text-base line-clamp-1 font-bold">Yamaha XSR</h4>
+                                        <h4 class="text-slate-900 text-base line-clamp-1 font-bold">
+                                            {{ $car->vehicleModel->name }}</h4>
                                         <div class="flex gap-2">
                                             <h6 class="text-xs font-semibold text-slate-600">
                                                 Sport</h6>
@@ -444,10 +445,10 @@
                                     </div>
                                     <i data-feather="heart" class="h-4 hidden sm:block"></i>
                                 </div>
-                                <a href="{{ route('cars.show', 1) }}"
+                                <a href="{{ route('cars.show', $car->code) }}"
                                     class="aspect-square flex items-center justify-center overflow-hidden">
-                                    <img src="{{ asset('assets/images/product/car/offroad.png') }}" alt=""
-                                        class="w-full object-center group-hover:scale-110 duration-500 transition-all">
+                                    <img src="{{ asset('storage/' . $car->images->first()->image_url) }}" alt=""
+                                        class="w-full object-center group-hover:scale-105 duration-500 transition-all">
                                 </a>
                                 <div class="flex flex-col gap-2 w-full">
                                     <div class="flex gap-4 pb-2 pt-2 w-full justify-start">
@@ -474,11 +475,25 @@
                                     </div>
                                     <div
                                         class="flex flex-col xl:flex-row justify-between gap-2 items-start xl:items-end w-full">
+                                        @php
+                                            $hasDiscount = $car->final_daily_price < $car->daily_price;
+                                        @endphp
                                         <div class="flex flex-col gap-1">
-                                            <h6 class="font-medium text-slate-500">Rp 500.000 <span
-                                                    class="text-xs text-slate-400">/Hari</span></h6>
-                                            <h6 class="font-medium line-through text-xs text-slate-400">Rp 800.000
-                                            </h6>
+                                            @if ($hasDiscount)
+                                                <h6 class="font-medium text-slate-500">
+                                                    Rp {{ number_format($car->final_daily_price, 0, ',', '.') }}
+                                                    <span class="text-xs text-slate-400">/Hari</span>
+                                                </h6>
+
+                                                <h6 class="font-medium line-through text-xs text-slate-400">
+                                                    Rp {{ number_format($car->daily_price, 0, ',', '.') }}
+                                                </h6>
+                                            @else
+                                                <h6 class="font-medium text-slate-500">
+                                                    Rp {{ number_format($car->daily_price, 0, ',', '.') }}
+                                                    <span class="text-xs text-slate-400">/Hari</span>
+                                                </h6>
+                                            @endif
                                         </div>
                                         <button
                                             class="py-1 px-4 rounded-full h-fit bg-lime-600 hover:bg-lime-700 cursor-pointer text-sm text-white w-full xl:w-fit">Rent
@@ -487,7 +502,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endfor
+                    @endforeach
                 </div>
             </section>
 

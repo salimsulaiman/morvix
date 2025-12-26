@@ -47,4 +47,4 @@ Route::get('/cars/{code}', [CarController::class, 'show'])->name('cars.show');
 
 // Motorcycles
 Route::get('/motorcycles', [MotorcycleController::class, 'index'])->name('motorcycles.index');
-Route::get('/motorcycles/{slug}', [MotorcycleController::class, 'show'])->name('motorcycles.show');
+Route::get('/motorcycles/{code}', [MotorcycleController::class, 'show'])->name('motorcycles.show');

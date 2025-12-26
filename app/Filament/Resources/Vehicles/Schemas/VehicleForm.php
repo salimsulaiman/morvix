@@ -4,7 +4,9 @@ namespace App\Filament\Resources\Vehicles\Schemas;
 
 use App\Filament\Resources\Vehicles\RelationManagers\DiscountsRelationManager;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MultiSelect;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -224,9 +226,8 @@ class VehicleForm
                                 Section::make('Deskripsi')
                                     ->columnSpanFull()
                                     ->schema([
-                                        Textarea::make('description')
-                                            ->rows(4)
-                                            ->maxLength(500),
+                                        RichEditor::make('description')
+                                            ->label('Description')
                                     ]),
                             ]),
                         Tab::make('Photos')
@@ -255,6 +256,34 @@ class VehicleForm
                                                     ->inline(false)
                                                     ->helperText('Set as main photo'),
                                             ]),
+                                    ]),
+                            ]),
+                        Tab::make('Feature')
+                            ->schema([
+                                MultiSelect::make('features')
+                                    ->relationship('features', 'name')
+                                    ->label('Features Kendaraan')
+                                    ->searchable()
+                                    ->preload()
+                                    ->createOptionForm([
+                                        TextInput::make('name')
+                                            ->label('Nama Feature')
+                                            ->required()
+                                            ->columnSpan(1)
+                                            ->maxLength(100),
+
+                                        TextInput::make('icon')
+                                            ->label('Icon (Feather Icon)')
+                                            ->placeholder('contoh: home, settings, user')
+                                            ->helperText('Gunakan nama icon dari Feather Icons tanpa prefix')
+                                            ->columnSpan(1)
+                                            ->required(),
+
+                                        Textarea::make('description')
+                                            ->label('Deskripsi')
+                                            ->rows(4)
+                                            ->columnSpanFull()
+                                            ->maxLength(255),
                                     ]),
                             ])
                     ])

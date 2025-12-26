@@ -13,7 +13,20 @@ class CarController extends Controller
      */
     public function index()
     {
-        return view('pages.cars.index');
+
+        $cars = Vehicle::with([
+            'vehicleModel.brand',
+            'images',
+            'location',
+            'bookings'
+        ])
+            ->whereHas('vehicleModel', function ($query) {
+                $query->where('type', 'car');
+            })
+            ->inRandomOrder()
+            ->paginate(12)
+            ->withQueryString();
+        return view('pages.cars.index', compact('cars'));
     }
 
     /**
@@ -44,7 +57,21 @@ class CarController extends Controller
             'bookings'
         ])->where('code', $code)->firstOrFail();
 
-        return view('pages.cars.detail', compact('car'));
+        $otherCars = Vehicle::with([
+            'vehicleModel.brand',
+            'images',
+            'location',
+            'bookings'
+        ])
+            ->where('id', '!=', $car->id)
+            ->whereHas('vehicleModel', function ($query) {
+                $query->where('type', 'car');
+            })
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+
+        return view('pages.cars.detail', compact('car', 'otherCars'));
     }
 
 

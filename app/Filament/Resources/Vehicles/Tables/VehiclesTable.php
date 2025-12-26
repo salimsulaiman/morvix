@@ -100,13 +100,22 @@ class VehiclesTable
                     ->label('Brand')
                     ->relationship('vehicleModel.brand', 'name'),
 
-                SelectFilter::make('vehicle_model')
-                    ->label('Vehicle Type')
-                    ->relationship('vehicleModel', 'type')
+                SelectFilter::make('type')
+                    ->label('Tipe Kendaraan')
                     ->options([
-                        'car' => 'Car',
-                        'motorcycle' => 'Motorcycle',
-                    ]),
+                        'car'        => 'Mobil',
+                        'motorcycle' => 'Motor',
+                    ])
+                    ->query(function ($query, $data) {
+                        if (! $data['value']) {
+                            return;
+                        }
+
+                        $query->whereHas('vehicleModel', function ($q) use ($data) {
+                            $q->where('type', $data['value']);
+                        });
+                    }),
+
             ])
             ->recordActions([
                 ViewAction::make(),

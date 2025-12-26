@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class MotorcycleController extends Controller
@@ -33,9 +34,30 @@ class MotorcycleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $code)
     {
-        //
+        $motorcycle = Vehicle::with([
+            'vehicleModel.brand',
+            'images',
+            'location',
+            'bookings'
+        ])->where('code', $code)->firstOrFail();
+
+        $otherMotorcycles = Vehicle::with([
+            'vehicleModel.brand',
+            'images',
+            'location',
+            'bookings'
+        ])
+            ->where('id', '!=', $motorcycle->id)
+            ->whereHas('vehicleModel', function ($query) {
+                $query->where('type', 'motorcycle');
+            })
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+
+        return view('pages.motorcycle.detail', compact('motorcycle', 'otherMotorcycles'));
     }
 
     /**
