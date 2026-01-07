@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Features\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -29,7 +30,8 @@ class FeaturesTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()->visible(fn() => in_array(currentUser()->role, ['admin', 'operator'])),
+                DeleteAction::make()->visible(fn() => currentUser()->role === 'admin'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

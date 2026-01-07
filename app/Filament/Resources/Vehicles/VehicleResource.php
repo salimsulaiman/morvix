@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use UnitEnum;
 
 class VehicleResource extends Resource
@@ -41,6 +42,26 @@ class VehicleResource extends Resource
         return [
             DiscountsRelationManager::class,
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return currentUser()->role === 'admin';
+    }
+
+    public static function canEdit($record): bool
+    {
+        return currentUser()->role === 'admin';
+    }
+
+    public static function canDelete($record): bool
+    {
+        return currentUser()->role === 'admin';
+    }
+
+    public static function canView($record = null): bool
+    {
+        return true;
     }
 
     public static function getPages(): array

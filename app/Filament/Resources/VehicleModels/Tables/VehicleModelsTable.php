@@ -7,6 +7,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -34,6 +35,10 @@ class VehicleModelsTable
                     ->formatStateUsing(fn($state) => Str::title($state))
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('type')
@@ -42,11 +47,16 @@ class VehicleModelsTable
                         'car' => 'Car',
                         'motorcycle' => 'Motorcycle',
                     ]),
+                SelectFilter::make('vehicle_category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name'),
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->visible(fn() => currentUser()?->role === 'admin'),
+                DeleteAction::make()
+                    ->visible(fn() => currentUser()?->role === 'admin'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

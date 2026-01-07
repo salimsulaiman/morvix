@@ -115,6 +115,18 @@
                         </div>
                     </div>
 
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label>
+                        <div class="relative">
+                            <textarea name="address" rows="3"
+                                class="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-lime-600 focus:border-transparent text-gray-900 appearance-none bg-white"
+                                placeholder="Masukkan alamat lengkap" required>{{ old('address', Auth::user()->address) }}</textarea>
+
+                            <i data-feather="map-pin" class="w-5 h-5 text-gray-400 absolute left-3.5 top-3.5"></i>
+                        </div>
+                    </div>
+
+
                     {{-- Save Button --}}
                     <button type="submit"
                         class="w-full bg-lime-600 text-white py-3 rounded-lg font-medium hover:bg-lime-700 transition-colors focus:outline-none focus:ring-2 focus:ring-lime-600 focus:ring-offset-2">

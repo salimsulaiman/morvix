@@ -18,199 +18,25 @@
             </p>
         </div>
     </section>
-    <div class="min-h-screen bg-white md:bg-slate-50" x-data="{ minPrice: 100000, maxPrice: 1000000, rating: 0 }">
+    <div class="min-h-screen bg-white md:bg-slate-50" x-data="{
+        rangeMin: {{ $priceRange->min }},
+        rangeMax: {{ $priceRange->max }},
+        minPrice: {{ $priceRange->min }},
+        maxPrice: {{ $priceRange->max }},
+        rating: 0
+    }">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
 
             <!-- ======== ASIDE FILTER ======== -->
-            <aside class="hidden md:block bg-white rounded-3xl shadow p-5 space-y-6">
-                <h2 class="text-sm font-bold text-slate-700 border-b border-lime-200 pb-2">Filter Motor</h2>
-
-                <div>
-                    <h3 class="text-sm font-semibold text-slate-600 mb-2 uppercase tracking-wide">Kategori Motor</h3>
-                    <div class="space-y-1 text-slate-700">
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Matic
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Sport
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Naked
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Cruiser
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-semibold text-slate-600 mb-2 uppercase tracking-wide">Transmisi Motor</h3>
-                    <div class="space-y-1 text-slate-700">
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Automatic
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Manual
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-semibold text-slate-600 mb-2 uppercase tracking-wide">Rating Motor</h3>
-                    <div class="flex items-center gap-1">
-                        <template x-for="i in 5">
-                            <button type="button" @click="rating = i" class="text-2xl transition"
-                                :class="rating >= i ? 'text-lime-500' : 'text-slate-300'" aria-label="Rating">
-                                ★
-                            </button>
-                        </template>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-1">
-                        Rating dipilih: <span x-text="rating"></span> / 5
-                    </p>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-semibold text-slate-600 mb-2 uppercase tracking-wide">Bahan Bakar</h3>
-                    <div class="space-y-1 text-slate-700">
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Bensin
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Hybrid
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" class="text-lime-600 focus:ring-lime-400"> Listrik
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-semibold text-slate-600 mb-2 uppercase tracking-wide">Fitur Motor</h3>
-                    <div class="space-y-1 text-slate-700">
-                        <label class="flex items-center gap-2"><input type="checkbox"
-                                class="text-lime-600 focus:ring-lime-400"> ABS</label>
-                        <label class="flex items-center gap-2"><input type="checkbox"
-                                class="text-lime-600 focus:ring-lime-400"> Smart Key</label>
-                        <label class="flex items-center gap-2"><input type="checkbox"
-                                class="text-lime-600 focus:ring-lime-400"> Bluetooth</label>
-                        <label class="flex items-center gap-2"><input type="checkbox"
-                                class="text-lime-600 focus:ring-lime-400"> Traction Control</label>
-                        <label class="flex items-center gap-2"><input type="checkbox"
-                                class="text-lime-600 focus:ring-lime-400"> LED Headlight</label>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-semibold text-slate-600 mb-2 uppercase tracking-wide">Rentang Harga</h3>
-
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-xs text-slate-500">
-                            <span>Rp <span x-text="minPrice.toLocaleString()"></span></span>
-                            <span>Rp <span x-text="maxPrice.toLocaleString()"></span></span>
-                        </div>
-
-                        <input type="range" x-model="minPrice" min="100000" max="1000000" step="50000"
-                            class="w-full accent-lime-500">
-                        <input type="range" x-model="maxPrice" min="100000" max="1000000" step="50000"
-                            class="w-full accent-lime-500">
-                    </div>
-                </div>
-                <button class="w-full bg-lime-600 text-white rounded-lg py-2 mt-3 hover:bg-lime-700 transition shadow-md">
-                    Terapkan Filter
-                </button>
-            </aside>
+            <x-vehicle-filter :categories="$categories" :features="$features" :priceRange="$priceRange" :type="$type" />
 
 
             <!-- ======== DISPLAY PRODUCT ======== -->
             <section class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 h-fit">
                 <div class="w-full flex flex-col gap-4 col-span-full">
-                    <div
-                        class="bg-slate-50 md:bg-white rounded-4xl flex flex-col gap-4 p-6 sm:p-8 justify-center
-                        h-auto lg:h-40">
-                        <h6 class="text-xs">Cari kendaraan</h6>
-
-                        <div
-                            class="flex flex-col lg:flex-row gap-6 lg:gap-4
-                        justify-between items-stretch lg:items-center">
-                            <div class="flex flex-col gap-4 w-full lg:w-auto">
-                                <h6 class="font-bold text-sm">Lokasi Penyewaan</h6>
-                                <div x-data="{ open: false, selected: 'Choose Location', options: ['Jakarta', 'Bandung', 'Surabaya', 'Yogyakarta', 'Bali'] }" class="relative">
-                                    <button type="button" @click.stop="open = !open"
-                                        class="bg-slate-200 md:bg-slate-100 text-gray-500 text-sm rounded-full
-                                   w-full lg:w-48 p-2.5 flex items-center gap-1">
-                                        <svg class="w-5 h-5 text-gray-500 flex-shrink-0" viewBox="0 0 20 20"
-                                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M3.37892 10.2236L8 16L12.6211 10.2236C13.5137 9.10788 14 7.72154 14 6.29266V6C14 2.68629 11.3137 0 8 0C4.68629 0 2 2.68629 2 6V6.29266C2 7.72154 2.4863 9.10788 3.37892 10.2236ZM8 8C9.10457 8 10 7.10457 10 6C10 4.89543 9.10457 4 8 4C6.89543 4 6 4.89543 6 6C6 7.10457 6.89543 8 8 8Z" />
-                                        </svg>
-                                        <span x-text="selected" class="truncate"></span>
-                                    </button>
-
-                                    <ul x-show="open" @click.outside="open = false" x-cloak
-                                        class="absolute left-0 mt-2 w-full lg:w-48 bg-white rounded-2xl shadow-md z-50 overflow-hidden py-2">
-                                        <template x-for="(option, index) in options" :key="index">
-                                            <li>
-                                                <button type="button" @click.stop="selected = option; open = false"
-                                                    class="w-full text-left px-4 py-2 text-sm hover:bg-lime-400 text-gray-700"
-                                                    :class="{ 'bg-lime-200 text-lime-900 font-medium': selected === option }"
-                                                    x-text="option">
-                                                </button>
-                                            </li>
-                                        </template>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="hidden lg:block w-[3px] h-full rounded-full bg-concrete-100"></div>
-                            <div class="flex flex-col gap-4 w-full lg:w-auto">
-                                <h6 class="font-bold text-sm">Tanggal Penyewaan</h6>
-
-                                <div class="relative w-full lg:max-w-sm">
-                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                                        </svg>
-                                    </div>
-
-                                    <input datepicker type="text"
-                                        class="bg-slate-200 md:bg-slate-100 text-gray-900 text-sm rounded-full block w-full ps-10 p-2.5 outline-none border-0 focus:ring-0"
-                                        placeholder="Select date start">
-                                </div>
-                            </div>
-
-                            <div class="hidden lg:block w-[3px] h-full rounded-full bg-concrete-100"></div>
-                            <div class="flex flex-col gap-4 w-full lg:w-auto">
-                                <h6 class="font-bold text-sm">Tanggal Pengembalian</h6>
-
-                                <div class="relative w-full lg:max-w-sm">
-                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                                        </svg>
-                                    </div>
-                                    <input datepicker type="text"
-                                        class="bg-slate-200 md:bg-slate-100 text-gray-900 text-sm rounded-full block w-full ps-10 p-2.5 outline-none border-0 focus:ring-0"
-                                        placeholder="Select date end">
-                                </div>
-                            </div>
-                            <button
-                                class="w-full md:w-full lg:w-auto
-                            rounded-full bg-lime-500 p-3 lg:p-2
-                            hover:bg-lime-600
-                            flex items-center justify-center lg:justify-center gap-2
-                            self-stretch lg:self-auto">
-                                <i data-feather="search" class="w-5 h-5 text-white"></i>
-                                <span class="text-white text-sm font-medium lg:hidden">
-                                    Cari Kendaraan
-                                </span>
-                            </button>
-
-                        </div>
-                    </div>
+                    @include('partials.search-vehicle', [
+                        'action' => url()->current(),
+                    ])
                 </div>
                 <div class="w-full gap-4 justify-between flex md:hidden col-span-full">
                     <button data-modal-target="sort-modal" data-modal-toggle="sort-modal">
@@ -449,24 +275,26 @@
                     </div>
                 </div>
                 <div class="w-full col-span-full grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                    @for ($i = 0; $i < 4; $i++)
+                    @foreach ($motorcycles as $motorcycle)
                         <div
                             class="w-full bg-none sm:bg-white rounded-none sm:rounded-3xl aspect-auto overflow-hidden relative group sm:shadow">
                             <div class="w-full h-full relative overflow-hidden px-2 sm:px-6 py-2 sm:py-6">
                                 <div class="w-full flex gap-2">
                                     <div class="flex flex-col w-full gap-1">
-                                        <h4 class="text-slate-900 text-base line-clamp-1 font-bold">Yamaha XSR</h4>
+                                        <h4 class="text-slate-900 text-base line-clamp-1 font-bold">
+                                            {{ $motorcycle->vehicleModel->name }}</h4>
                                         <div class="flex gap-2">
                                             <h6 class="text-xs font-semibold text-slate-600">
-                                                Sport</h6>
+                                                {{ $motorcycle->vehicleModel->category['name'] }}</h6>
                                         </div>
                                     </div>
                                     <i data-feather="heart" class="h-4 hidden sm:block"></i>
                                 </div>
-                                <a href="{{ route('cars.show', 1) }}"
+                                <a href="{{ route('motorcycles.show', $motorcycle->code) }}"
                                     class="aspect-square flex items-center justify-center overflow-hidden">
-                                    <img src="{{ asset('assets/images/product/motorcycle/xsr.png') }}" alt=""
-                                        class="w-full object-center group-hover:scale-110 duration-500 transition-all">
+                                    <img src="{{ asset('storage/' . $motorcycle->images->first()->image_url) }}"
+                                        alt=""
+                                        class="w-full object-center group-hover:scale-105 duration-500 transition-all">
                                 </a>
                                 <div class="flex flex-col gap-2 w-full">
                                     <div class="flex gap-4 pb-2 pt-2 w-full justify-start">
@@ -478,7 +306,8 @@
                                                     transform="translate(84,4)" />
                                             </svg>
 
-                                            <span class="text-slate-500 text-xs font-semibold uppercase">Manually</span>
+                                            <span
+                                                class="text-slate-500 text-xs font-semibold uppercase">{{ $motorcycle->transmission }}</span>
                                         </div>
                                         <div class="flex gap-1 items-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="40 50 100 100"
@@ -487,17 +316,37 @@
                                                     d="M101.25 133.22C101.25 129.5 101.18 117.57 101.18 114.06C101.18 109.73 100.89 107.59 95.18 107.06C95.09 119.49 95 132.17 95 139H99.15L98.97 147.5L43 147.3L42.65 139H47.32C47.15 124.16 46.62 77.82 46.47 73C46.29 67.25 49.16 63.84 55.99 63.66C62.82 63.48 80.76 63.12 86.68 63.3C92.6 63.48 95.33 65.94 95.33 73.84C95.33 76.93 95.27 88.32 95.2 101.06C105.03 101.98 107.2 106.95 107.2 114.06C107.2 117.55 107.27 130.43 107.27 133.22C107.27 137.01 113.88 137.35 113.88 133.08C113.88 129.98 113.88 102.08 113.88 102.08L105.98 94.71L107.1 83.9L99.2 75.75L103 71.31L119.81 88.06C119.81 88.06 119.95 121.43 119.95 133.06C119.95 144.69 101.25 144.33 101.25 133.22ZM53 73.41C53 73.41 53.31 80.74 53.31 90.23C53.31 104.9 88.77 104.16 88.77 90.08C88.77 82.17 88.93 73.08 88.93 73.08L53 73.41Z" />
                                             </svg>
 
-                                            <span class="text-slate-500 text-xs font-semibold">70 L</span>
+                                            <span class="text-slate-500 text-xs font-semibold">
+                                                @if (!is_null($motorcycle->fuel_tank_capacity))
+                                                    {{ round($motorcycle->fuel_tank_capacity) }} <span>L</span>
+                                                @else
+                                                    {{ round($motorcycle->battery_capacity_kwh) }} <span>kWh</span>
+                                                @endif
+                                            </span>
                                         </div>
 
                                     </div>
                                     <div
                                         class="flex flex-col xl:flex-row justify-between gap-2 items-start xl:items-end w-full">
+                                        @php
+                                            $hasDiscount = $motorcycle->final_daily_price < $motorcycle->daily_price;
+                                        @endphp
                                         <div class="flex flex-col gap-1">
-                                            <h6 class="font-medium text-slate-500">Rp 500.000 <span
-                                                    class="text-xs text-slate-400">/Hari</span></h6>
-                                            <h6 class="font-medium line-through text-xs text-slate-400">Rp 800.000
-                                            </h6>
+                                            @if ($hasDiscount)
+                                                <h6 class="font-medium text-slate-500">
+                                                    Rp {{ number_format($motorcycle->final_daily_price, 0, ',', '.') }}
+                                                    <span class="text-xs text-slate-400">/Hari</span>
+                                                </h6>
+
+                                                <h6 class="font-medium line-through text-xs text-slate-400">
+                                                    Rp {{ number_format($motorcycle->daily_price, 0, ',', '.') }}
+                                                </h6>
+                                            @else
+                                                <h6 class="font-medium text-slate-500">
+                                                    Rp {{ number_format($motorcycle->daily_price, 0, ',', '.') }}
+                                                    <span class="text-xs text-slate-400">/Hari</span>
+                                                </h6>
+                                            @endif
                                         </div>
                                         <button
                                             class="py-1 px-4 rounded-full h-fit bg-lime-600 hover:bg-lime-700 cursor-pointer text-sm text-white w-full xl:w-fit">Rent
@@ -506,7 +355,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endfor
+                    @endforeach
                 </div>
             </section>
 

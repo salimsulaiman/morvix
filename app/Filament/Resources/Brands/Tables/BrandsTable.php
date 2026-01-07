@@ -26,8 +26,8 @@ class BrandsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()->visible(fn() => in_array(currentUser()->role, ['admin', 'operator'])),
+                DeleteAction::make()->visible(fn() => currentUser()->role === 'admin'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

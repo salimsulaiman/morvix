@@ -76,6 +76,18 @@ class Vehicle extends Model
         );
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->reviews()
+            ->where('is_published', true)
+            ->avg('rating');
+    }
+
     public function activeDiscounts()
     {
         return $this->discounts()
@@ -106,15 +118,6 @@ class Vehicle extends Model
             : max(0, $price - (float) $discount->value);
     }
 
-    protected static function booted()
-    {
-        static::creating(function ($vehicle) {
-            if (!$vehicle->code) {
-                $vehicle->code = static::generateVehicleCode($vehicle);
-            }
-        });
-    }
-
     protected static function generateVehicleCode($vehicle)
     {
         $brand = $vehicle->vehicleModel->brand->name ?? 'UNK';
@@ -126,8 +129,36 @@ class Vehicle extends Model
         do {
             $randomNumber = mt_rand(1000, 9999);
             $code = "{$brandCode}-{$typeCode}-{$randomNumber}";
-        } while (self::where('code', $code)->exists()); // pastikan unik
+        } while (self::where('code', $code)->exists());
 
         return $code;
+    }
+
+    public function getFormattedLicensePlateAttribute(): string
+    {
+        $plate = strtoupper($this->license_plate);
+
+        return preg_replace(
+            '/^([A-Z]+)(\d+)([A-Z]*)$/',
+            '$1 $2 $3',
+            $plate
+        );
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($vehicle) {
+            if (!$vehicle->code) {
+                $vehicle->code = static::generateVehicleCode($vehicle);
+            }
+        });
+
+        static::saving(function ($vehicle) {
+            if ($vehicle->fuel_type === 'electric') {
+                $vehicle->fuel_tank_capacity = null;
+            } else {
+                $vehicle->battery_capacity_kwh = null;
+            }
+        });
     }
 }

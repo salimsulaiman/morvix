@@ -119,13 +119,14 @@ class VehicleForm
                                         TextInput::make('fuel_tank_capacity')
                                             ->label('Fuel Tank Capacity (L)')
                                             ->numeric()
-                                            ->visible(fn(UtilitiesGet $get) => $get('fuel_type') !== 'electric'),
-
+                                            ->visible(fn(UtilitiesGet $get) => $get('fuel_type') !== 'electric')
+                                            ->dehydrated(fn(UtilitiesGet $get) => $get('fuel_type') !== 'electric'),
 
                                         TextInput::make('battery_capacity_kwh')
                                             ->label('Battery Capacity (kWh)')
                                             ->numeric()
-                                            ->visible(fn(UtilitiesGet $get) => $get('fuel_type') === 'electric'),
+                                            ->visible(fn(UtilitiesGet $get) => $get('fuel_type') === 'electric')
+                                            ->dehydrated(fn(UtilitiesGet $get) => $get('fuel_type') === 'electric'),
 
                                         TextInput::make('seats')
                                             ->label('Seats')

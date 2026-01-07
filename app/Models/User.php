@@ -23,7 +23,11 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return in_array($this->role, ['admin', 'operator']);
+        if ($panel->getId() === 'admin') {
+            return in_array($this->role, ['admin', 'operator']);
+        }
+
+        return false;
     }
     protected $fillable = [
         'name',
@@ -76,5 +80,10 @@ class User extends Authenticatable implements FilamentUser
     public function sims()
     {
         return $this->hasMany(UserSim::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }

@@ -119,8 +119,10 @@ class VehiclesTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->visible(fn() => currentUser()?->role === 'admin'),
+                DeleteAction::make()
+                    ->visible(fn() => currentUser()?->role === 'admin'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

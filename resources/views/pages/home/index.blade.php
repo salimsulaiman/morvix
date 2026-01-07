@@ -23,104 +23,35 @@
                 pelayanan unggulan dan harga ramah kantong.
             </p>
             <div class="w-full mt-8 sm:mt-16 lg:mt-24">
-                <div class="max-w-5xl mx-auto flex flex-col gap-4 lg:px-0">
+                <div class="max-w-5xl mx-auto flex flex-col gap-4 lg:px-0" x-data="{
+                    type: 'car',
+                    actions: {
+                        car: '{{ route('cars.index') }}',
+                        motorcycle: '{{ route('motorcycles.index') }}'
+                    }
+                }">
                     <div class="flex gap-2 flex-wrap">
-                        <button class="rounded-full px-4 py-2 text-sm bg-lime-500 cursor-pointer flex gap-1 items-center">
+                        <button type="button" @click="type = 'car'"
+                            class="rounded-full px-4 py-2 text-sm cursor-pointer flex gap-1 items-center transition text-slate-700"
+                            :class="type === 'car'
+                                ?
+                                'bg-lime-500' :
+                                'bg-slate-200'">
                             <img src="{{ asset('assets/icons/car.png') }}" alt="car-icon" class="h-5">
                             Mobil
                         </button>
 
-                        <button class="rounded-full px-4 py-2 text-sm bg-slate-200 cursor-pointer flex gap-1 items-center">
+                        <button type="button" @click="type = 'motorcycle'"
+                            class="rounded-full px-4 py-2 text-sm cursor-pointer flex gap-1 items-center transition text-slate-700"
+                            :class="type === 'motorcycle'
+                                ?
+                                'bg-lime-500' :
+                                'bg-slate-200'">
                             <img src="{{ asset('assets/icons/motorcycle.png') }}" alt="motor-icon" class="h-5">
                             Motor
                         </button>
                     </div>
-                    <div
-                        class="bg-white rounded-4xl flex flex-col gap-4 p-6 sm:p-8 justify-center
-                   h-auto lg:h-40">
-                        <h6 class="text-xs">Cari kendaraan</h6>
-
-                        <div
-                            class="flex flex-col lg:flex-row gap-6 lg:gap-4
-                       justify-between items-stretch lg:items-center">
-                            <div class="flex flex-col gap-4 w-full lg:w-auto">
-                                <h6 class="font-bold text-sm">Lokasi Penyewaan</h6>
-                                <div x-data="{ open: false, selected: 'Choose Location', options: ['Jakarta', 'Bandung', 'Surabaya', 'Yogyakarta', 'Bali'] }" class="relative">
-                                    <button type="button" @click.stop="open = !open"
-                                        class="bg-gray-100 text-gray-500 text-sm rounded-full
-                                   w-full lg:w-48 p-2.5 flex items-center gap-1">
-                                        <svg class="w-5 h-5 text-gray-500 flex-shrink-0" viewBox="0 0 20 20"
-                                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M3.37892 10.2236L8 16L12.6211 10.2236C13.5137 9.10788 14 7.72154 14 6.29266V6C14 2.68629 11.3137 0 8 0C4.68629 0 2 2.68629 2 6V6.29266C2 7.72154 2.4863 9.10788 3.37892 10.2236ZM8 8C9.10457 8 10 7.10457 10 6C10 4.89543 9.10457 4 8 4C6.89543 4 6 4.89543 6 6C6 7.10457 6.89543 8 8 8Z" />
-                                        </svg>
-                                        <span x-text="selected" class="truncate"></span>
-                                    </button>
-
-                                    <ul x-show="open" @click.outside="open = false" x-cloak
-                                        class="absolute left-0 mt-2 w-full lg:w-48 bg-white rounded-2xl shadow-md z-50 overflow-hidden py-2">
-                                        <template x-for="(option, index) in options" :key="index">
-                                            <li>
-                                                <button type="button" @click.stop="selected = option; open = false"
-                                                    class="w-full text-left px-4 py-2 text-sm hover:bg-lime-400 text-gray-700"
-                                                    :class="{ 'bg-lime-200 text-lime-900 font-medium': selected === option }"
-                                                    x-text="option">
-                                                </button>
-                                            </li>
-                                        </template>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="hidden lg:block w-[3px] h-full rounded-full bg-concrete-100"></div>
-                            <div class="flex flex-col gap-4 w-full lg:w-auto">
-                                <h6 class="font-bold text-sm">Tanggal Penyewaan</h6>
-
-                                <div class="relative w-full lg:max-w-sm">
-                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                                        </svg>
-                                    </div>
-
-                                    <input datepicker type="text"
-                                        class="bg-gray-100 text-gray-900 text-sm rounded-full block w-full ps-10 p-2.5 outline-none border-0 focus:ring-0"
-                                        placeholder="Select date start">
-                                </div>
-                            </div>
-
-                            <div class="hidden lg:block w-[3px] h-full rounded-full bg-concrete-100"></div>
-                            <div class="flex flex-col gap-4 w-full lg:w-auto">
-                                <h6 class="font-bold text-sm">Tanggal Pengembalian</h6>
-
-                                <div class="relative w-full lg:max-w-sm">
-                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                                        </svg>
-                                    </div>
-                                    <input datepicker type="text"
-                                        class="bg-gray-100 text-gray-900 text-sm rounded-full block w-full ps-10 p-2.5 outline-none border-0 focus:ring-0"
-                                        placeholder="Select date end">
-                                </div>
-                            </div>
-                            <button
-                                class="w-full md:w-full lg:w-auto
-           rounded-full bg-lime-500 p-3 lg:p-2
-           hover:bg-lime-600
-           flex items-center justify-center lg:justify-center gap-2
-           self-stretch lg:self-auto">
-                                <i data-feather="search" class="w-5 h-5 text-white"></i>
-                                <span class="text-white text-sm font-medium lg:hidden">
-                                    Cari Kendaraan
-                                </span>
-                            </button>
-
-                        </div>
-                    </div>
+                    @include('partials.search-vehicle')
                 </div>
             </div>
 
@@ -210,8 +141,8 @@
                                         class="absolute inset-0 bg-gradient-to-b from-gray-800/40 via-gray-400/20 to-gray-800/40 z-20">
                                     </div>
 
-                                    <img src="{{ asset('storage/' . $vehicle->images->first()->image_url) }}"
-                                        alt="" class="relative z-30 w-full object-contain px-6 sm:px-0">
+                                    <img src="{{ asset('storage/' . $vehicle->images->first()->image_url) }}" alt=""
+                                        class="relative z-30 w-full object-contain px-6 sm:px-0">
                                 </div>
 
                                 <div class="absolute inset-0 z-20 flex flex-col gap-4 justify-between">
@@ -427,17 +358,17 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
 
             <!-- HEADER -->
-            <h2 class="font-bold text-xl sm:text-2xl uppercase mb-4 max-w-sm text-slate-950">
+            <h2 class="font-bold text-xl sm:text-2xl uppercase mb-4 max-w-sm text-white">
                 Find the Perfect Car for You
             </h2>
 
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
-                <p class="text-sm max-w-2xl text-slate-900">
+                <p class="text-sm max-w-2xl text-slate-100">
                     Temukan mobil dan motor pilihan terbaik kami — dipilih khusus
                     <span class="text-lime-600 font-bold">morvix</span>.
                 </p>
 
-                <a href="" class="text-sm font-bold text-slate-900 hover:text-slate-950 self-start sm:self-auto">
+                <a href="" class="text-sm font-bold text-slate-100 hover:text-white self-start sm:self-auto">
                     Lihat semua
                 </a>
             </div>
@@ -469,7 +400,7 @@
                                             </h4>
                                             <div class="flex gap-2">
                                                 <h6 class="text-xs font-semibold text-slate-100">
-                                                    Sport
+                                                    {{ $car->vehicleModel->category['name'] }}
                                                 </h6>
                                             </div>
                                         </div>
@@ -595,7 +526,7 @@
                                         </h4>
                                         <div class="flex gap-2">
                                             <h6 class="text-xs font-semibold text-slate-900">
-                                                Sport
+                                                {{ $motorcycle->vehicleModel->category['name'] }}
                                             </h6>
                                         </div>
                                     </div>

@@ -13,6 +13,9 @@ class Booking extends Model
         'start_date',
         'end_date',
         'total_days',
+        'daily_price',
+        'admin_fee',
+        'subtotal',
         'total_price',
         'deposit_amount',
         'payment_status',
@@ -42,5 +45,16 @@ class Booking extends Model
     public function payment()
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
+
+    public function canBeReviewed(): bool
+    {
+        return $this->status === 'completed'
+            && $this->review === null;
     }
 }

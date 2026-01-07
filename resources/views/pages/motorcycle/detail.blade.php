@@ -8,8 +8,8 @@
             class="relative z-10 mx-auto flex min-h-[500px] max-w-7xl flex-col items-center justify-center gap-5 px-8 pt-20 text-center">
             <h5 class="uppercase text-xs px-4 py-1 bg-lime-600 text-white rounded-full">Motor</h5>
             <h1 class="max-w-3xl text-3xl font-semibold leading-tight text-white uppercase">
-                Rental Motor <span class="font-bold text-lime-500">Nyaman & Praktis</span> untuk
-                Perjalanan Anda
+                Rental Motor <span class="font-bold text-lime-500">Nyaman</span> untuk
+                Setiap Perjalanan
             </h1>
 
             <p class="max-w-xl text-base text-gray-200">
@@ -18,84 +18,13 @@
             </p>
         </div>
     </section>
-    <div class="max-w-7xl mx-auto px-8 py-16" x-data="{
+    <div class="max-w-7xl mx-auto px-8 py-16" x-data="carBookingData({
         mainPhoto: '{{ asset('storage/' . ($motorcycle->images->first()->image_url ?? '')) }}',
-        photos: [
-            @foreach ($motorcycle->images as $img)
-            '{{ asset('storage/' . $img->image_url) }}', @endforeach
-        ],
-        adultCount: 1,
-        childCount: 0,
+        photos: [@foreach ($motorcycle->images as $img)'{{ asset('storage/' . $img->image_url) }}', @endforeach],
         maxSeats: {{ $motorcycle->seats ?? 6 }},
-        days: 1,
-        pricePerDay: {{ $motorcycle->final_daily_price ?? ($motorcycle->daily_price ?? 350000) }},
-        startDatePicker: null,
-        endDatePicker: null,
-    
-        init() {
-            this.$nextTick(() => {
-                this.initializeDatePickers();
-            });
-        },
-    
-        initializeDatePickers() {
-            const startEl = this.$refs.startDate;
-            const endEl = this.$refs.endDate;
-    
-            if (startEl && endEl) {
-                this.startDatePicker = new Datepicker(startEl, {
-                    autohide: true,
-                    format: 'mm/dd/yyyy',
-                    minDate: new Date(),
-                });
-                this.endDatePicker = new Datepicker(endEl, {
-                    autohide: true,
-                    format: 'mm/dd/yyyy',
-                    minDate: new Date(),
-                });
-    
-                startEl.addEventListener('changeDate', (e) => {
-                    this.calculateDays();
-                });
-    
-                endEl.addEventListener('changeDate', (e) => {
-                    this.calculateDays();
-                });
-            }
-        },
-        changePhoto(photo) {
-            this.mainPhoto = photo;
-        },
-        incrementAdult() {
-            const remainingSeats = this.maxSeats - this.childCount;
-            if (this.adultCount < remainingSeats) this.adultCount++;
-        },
-        decrementAdult() {
-            if (this.adultCount > 1) this.adultCount--;
-        },
-        incrementChild() {
-            const remainingSeats = this.maxSeats - this.adultCount;
-            if (this.childCount < remainingSeats) this.childCount++;
-        },
-        decrementChild() {
-            if (this.childCount > 0) this.childCount--;
-        },
-        calculateTotal() {
-            return this.days * this.pricePerDay;
-        },
-        calculateDays() {
-            const startDate = this.startDatePicker?.getDate();
-            const endDate = this.endDatePicker?.getDate();
-    
-            if (startDate && endDate) {
-                const diffTime = endDate - startDate;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-                this.days = diffDays > 0 ? diffDays : 1;
-            }
-        }
-    
-    }">
+        dailyPrice: {{ $motorcycle->daily_price ?? 350000 }},
+        finalDailyPrice: {{ $motorcycle->final_daily_price ?? ($motorcycle->daily_price ?? 350000) }}
+    })">
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
             <!-- Main Content -->
@@ -134,23 +63,48 @@
                             </div>
                         </div>
                         @php
-                            $price = $motorcycle->final_daily_price ?? ($motorcycle->daily_price ?? 350000);
+                            $originalPrice = $motorcycle->daily_price ?? 350000;
+                            $finalPrice = $motorcycle->final_daily_price ?? $originalPrice;
 
-                            if ($price >= 1000) {
-                                if ($price >= 1000000) {
-                                    $displayPrice = round($price / 1000000, 1) . 'M';
-                                } else {
-                                    $displayPrice = round($price / 1000, 1) . 'K';
+                            function shortPrice($price)
+                            {
+                                if ($price >= 1_000_000) {
+                                    return round($price / 1_000_000, 1) . 'M';
                                 }
-                            } else {
-                                $displayPrice = $price;
+                                if ($price >= 1_000) {
+                                    return round($price / 1_000, 1) . 'K';
+                                }
+                                return $price;
                             }
+
+                            $displayFinal = shortPrice($finalPrice);
+                            $displayOriginal = shortPrice($originalPrice);
                         @endphp
 
                         <div class="text-right">
-                            <p class="text-3xl font-bold text-lime-600">Rp {{ $displayPrice }}</p>
-                            <p class="text-sm text-slate-500">per hari</p>
+                            <p class="text-3xl font-bold text-lime-600">
+                                Rp {{ $displayFinal }}
+                            </p>
+
+                            @if ($finalPrice < $originalPrice)
+                                <p class="text-sm text-slate-400 line-through">
+                                    Rp {{ $displayOriginal }}
+                                </p>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    per hari
+                                </p>
+
+                                <p class="text-xs text-green-600 mt-1">
+                                    *Harga promo berlaku untuk pemesanan 1 hari
+                                </p>
+                            @else
+                                <p class="text-sm text-slate-500 mt-1">
+                                    per hari
+                                </p>
+                            @endif
                         </div>
+
                     </div>
                 </div>
 
@@ -160,7 +114,7 @@
                         <i data-feather="file-text" class="w-5 h-5 text-lime-600"></i>
                         Deskripsi
                     </h2>
-                    <div class="prose prose-slate max-w-none prose-p:my-4">
+                    <div class="prose prose-slate max-w-none prose-p:my-4 text-justify">
                         {!! $motorcycle->description ?? '<p>Tidak ada deskripsi tersedia untuk mobil ini.</p>' !!}
                     </div>
 
@@ -285,100 +239,139 @@
 
             <!-- Booking Sidebar -->
             <div class="lg:col-span-1 relative">
-                <div class="bg-white rounded-lg shadow-md p-6 sticky top-20">
+                <div class="bg-white rounded-lg shadow-md p-6">
                     <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
                         <i data-feather="calendar" class="w-5 h-5 text-lime-600"></i>
                         Form Booking
                     </h2>
+                    <form method="POST" action="{{ route('booking.store', $motorcycle->id) }}">
+                        @csrf
+                        <div id="date-range-picker" class="flex flex-col mb-4 gap-4">
+                            <div class="relative">
+                                <label class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                                    <i data-feather="calendar" class="w-4 h-4 inline text-lime-600"></i>
+                                    Tanggal Pengambilan
+                                </label>
+                                <input id="datepicker-range-start" name="start" type="text" x-ref="startDate"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    placeholder="Select date start">
+                            </div>
 
-                    <div id="date-range-picker" class="flex flex-col mb-4 gap-4">
-                        <div class="relative">
-                            <label class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-                                <i data-feather="calendar" class="w-4 h-4 inline text-lime-600"></i>
-                                Tanggal Pengambilan
-                            </label>
-                            <input id="datepicker-range-start" name="start" type="text" x-ref="startDate"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Select date start">
+
+                            <div class="relative">
+                                <label class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                                    <i data-feather="clock" class="w-4 h-4 text-lime-600"></i>
+                                    Jam Pengambilan
+                                </label>
+
+                                <div class="relative">
+                                    <div
+                                        class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                                        <svg class="w-4 h-4 text-body" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                            viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </div>
+
+                                    <input type="time" x-model="startTime" min="08:00" max="16:00"
+                                        value="08:00"
+                                        class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium
+                                         text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs"
+                                        @change="calculateDays(); validateTime()" required />
+                                    <input type="hidden" name="start_time" :value="startTime">
+                                </div>
+                            </div>
+
+
+
+                            <div class="relative">
+                                <label class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                                    <i data-feather="calendar" class="w-4 h-4 inline text-lime-600"></i>
+                                    Tanggal Pengembalian
+                                </label>
+                                <input id="datepicker-range-end" name="end" type="text" x-ref="endDate"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    placeholder="Select date end">
+                            </div>
+
                         </div>
-                        <div class="relative">
+
+
+                        <!-- Passenger Counter -->
+                        <div class="mb-4">
                             <label class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-                                <i data-feather="calendar" class="w-4 h-4 inline text-lime-600"></i>
-                                Tanggal Pengembalian
+                                <i data-feather="users" class="w-4 h-4 inline text-lime-600"></i>
+                                Jumlah Penumpang
                             </label>
-                            <input id="datepicker-range-end" name="end" type="text" x-ref="endDate"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Select date end">
-                        </div>
-                    </div>
 
-                    <!-- Passenger Counter -->
-                    <div class="mb-4">
-                        <label class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-                            <i data-feather="users" class="w-4 h-4 inline text-lime-600"></i>
-                            Jumlah Penumpang
-                        </label>
+                            <!-- Adult Counter -->
+                            <div class="flex items-center justify-between mb-3 p-3 bg-slate-50 rounded-lg">
+                                <span class="text-slate-700">Dewasa</span>
+                                <div class="flex items-center gap-3">
+                                    <button @click="decrementAdult" type="button"
+                                        class="w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded-full hover:bg-lime-500 hover:text-white hover:border-lime-500 transition-colors">
+                                        <i data-feather="minus" class="w-4 h-4"></i>
+                                    </button>
+                                    <span class="w-8 text-center font-semibold" x-text="adultCount"></span>
+                                    <button @click="incrementAdult" type="button"
+                                        class="w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded-full hover:bg-lime-500 hover:text-white hover:border-lime-500 transition-colors">
+                                        <i data-feather="plus" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <input type="hidden" name="adult_count" :value="adultCount">
+                            </div>
 
-                        <!-- Adult Counter -->
-                        <div class="flex items-center justify-between mb-3 p-3 bg-slate-50 rounded-lg">
-                            <span class="text-slate-700">Dewasa</span>
-                            <div class="flex items-center gap-3">
-                                <button @click="decrementAdult"
-                                    class="w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded-full hover:bg-lime-500 hover:text-white hover:border-lime-500 transition-colors">
-                                    <i data-feather="minus" class="w-4 h-4"></i>
-                                </button>
-                                <span class="w-8 text-center font-semibold" x-text="adultCount"></span>
-                                <button @click="incrementAdult"
-                                    class="w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded-full hover:bg-lime-500 hover:text-white hover:border-lime-500 transition-colors">
-                                    <i data-feather="plus" class="w-4 h-4"></i>
-                                </button>
+                            <!-- Child Counter -->
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <span class="text-slate-700">Anak-anak</span>
+                                <div class="flex items-center gap-3">
+                                    <button @click="decrementChild" type="button"
+                                        class="w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded-full hover:bg-lime-500 hover:text-white hover:border-lime-500 transition-colors">
+                                        <i data-feather="minus" class="w-4 h-4"></i>
+                                    </button>
+                                    <span class="w-8 text-center font-semibold" x-text="childCount"></span>
+                                    <button @click="incrementChild" type="button"
+                                        class="w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded-full hover:bg-lime-500 hover:text-white hover:border-lime-500 transition-colors">
+                                        <i data-feather="plus" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <input type="hidden" name="child_count" :value="childCount">
                             </div>
                         </div>
 
-                        <!-- Child Counter -->
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                            <span class="text-slate-700">Anak-anak</span>
-                            <div class="flex items-center gap-3">
-                                <button @click="decrementChild"
-                                    class="w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded-full hover:bg-lime-500 hover:text-white hover:border-lime-500 transition-colors">
-                                    <i data-feather="minus" class="w-4 h-4"></i>
-                                </button>
-                                <span class="w-8 text-center font-semibold" x-text="childCount"></span>
-                                <button @click="incrementChild"
-                                    class="w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded-full hover:bg-lime-500 hover:text-white hover:border-lime-500 transition-colors">
-                                    <i data-feather="plus" class="w-4 h-4"></i>
-                                </button>
+                        <!-- Price Summary -->
+                        <div class="border-t border-slate-200 pt-4 mb-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <input type="hidden" name="daily_price" :value="pricePerDay">
+                                <span class="text-slate-600">
+                                    <span x-text="'Rp ' + pricePerDay.toLocaleString('id-ID')"></span> x
+                                    <span x-text="days > 0 ? days : 1"></span>
+                                    hari
+                                </span>
+                                <input type="hidden" name="total_days" :value="days">
+                            </div>
+                            <div class="flex justify-between items-center text-lg font-bold">
+                                <span class="text-slate-800">Total Harga</span>
+                                <span class="text-lime-600"
+                                    x-text="calculateTotal().toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })"></span>
+                                <input type="hidden" name="total_price" :value="calculateTotal()">
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Price Summary -->
-                    <div class="border-t border-slate-200 pt-4 mb-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-slate-600">
-                                <span x-text="'Rp ' + pricePerDay.toLocaleString('id-ID')"></span> x
-                                <span x-text="days > 0 ? days : 1"></span>
-                                hari
-                            </span>
-                        </div>
-                        <div class="flex justify-between items-center text-lg font-bold">
-                            <span class="text-slate-800">Total Harga</span>
-                            <span class="text-lime-600"
-                                x-text="calculateTotal().toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })"></span>
-                        </div>
-                    </div>
+                        <!-- Booking Button -->
+                        <button type="submit"
+                            class="w-full bg-lime-500 hover:bg-lime-600 text-slate-950 font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i data-feather="check-circle" class="w-5 h-5"></i>
+                            Booking Sekarang
+                        </button>
 
-                    <!-- Booking Button -->
-                    <button
-                        class="w-full bg-lime-500 hover:bg-lime-600 text-slate-950 font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
-                        <i data-feather="check-circle" class="w-5 h-5"></i>
-                        Booking Sekarang
-                    </button>
 
-                    <p class="text-xs text-slate-500 text-center mt-3">
-                        <i data-feather="shield" class="w-3 h-3 inline"></i>
-                        Pembayaran aman dan terenkripsi
-                    </p>
+                        <p class="text-xs text-slate-500 text-center mt-3">
+                            <i data-feather="shield" class="w-3 h-3 inline"></i>
+                            Pembayaran aman dan terenkripsi
+                        </p>
+                    </form>
                 </div>
             </div>
         </div>
@@ -457,4 +450,106 @@
             </div>
         </div>
     </section>
+@endsection
+@section('scripts')
+    <script>
+        function carBookingData(carData) {
+            return {
+                mainPhoto: carData.mainPhoto,
+                photos: carData.photos,
+                adultCount: 1,
+                childCount: 0,
+                maxSeats: carData.maxSeats,
+                days: 1,
+                dailyPrice: carData.dailyPrice,
+                finalDailyPrice: carData.finalDailyPrice,
+                startDatePicker: null,
+                endDatePicker: null,
+                startTime: '08:00',
+
+                init() {
+                    this.$nextTick(() => {
+                        this.initializeDatePickers();
+                    });
+                },
+
+                initializeDatePickers() {
+                    const startEl = this.$refs.startDate;
+                    const endEl = this.$refs.endDate;
+
+                    if (startEl && endEl) {
+                        this.startDatePicker = new Datepicker(startEl, {
+                            autohide: true,
+                            format: 'mm/dd/yyyy',
+                            minDate: new Date(),
+                        });
+                        this.endDatePicker = new Datepicker(endEl, {
+                            autohide: true,
+                            format: 'mm/dd/yyyy',
+                            minDate: new Date(),
+                        });
+
+                        startEl.addEventListener('changeDate', (e) => {
+                            this.calculateDays();
+                        });
+
+                        endEl.addEventListener('changeDate', (e) => {
+                            this.calculateDays();
+                        });
+                    }
+                },
+
+                changePhoto(photo) {
+                    this.mainPhoto = photo;
+                },
+
+                incrementAdult() {
+                    const remainingSeats = this.maxSeats - this.childCount;
+                    if (this.adultCount < remainingSeats) this.adultCount++;
+                },
+
+                decrementAdult() {
+                    if (this.adultCount > 1) this.adultCount--;
+                },
+
+                incrementChild() {
+                    const remainingSeats = this.maxSeats - this.adultCount;
+                    if (this.childCount < remainingSeats) this.childCount++;
+                },
+
+                decrementChild() {
+                    if (this.childCount > 0) this.childCount--;
+                },
+
+                get pricePerDay() {
+                    return this.days === 1 ?
+                        this.finalDailyPrice :
+                        this.dailyPrice;
+                },
+
+                calculateTotal() {
+                    return this.days * this.pricePerDay;
+                },
+
+                calculateDays() {
+                    const startDate = this.startDatePicker?.getDate();
+                    const endDate = this.endDatePicker?.getDate();
+
+                    if (!startDate || !endDate) return;
+
+                    const start = new Date(startDate);
+                    const [sh, sm] = this.startTime.split(':');
+                    start.setHours(sh, sm, 0, 0);
+
+                    const end = new Date(endDate);
+                    end.setHours(sh, sm, 0, 0);
+
+                    const diffMs = end - start;
+                    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+                    this.days = diffDays > 0 ? diffDays : 1;
+                },
+            }
+        }
+    </script>
 @endsection

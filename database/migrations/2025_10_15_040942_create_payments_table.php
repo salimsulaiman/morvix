@@ -17,9 +17,15 @@ return new class extends Migration
             $table->enum('payment_gateway', ['midtrans', 'xendit', 'tripay', 'manual'])->default('midtrans');
             $table->enum('payment_type', ['full', 'dp', 'refund'])->default('full');
             $table->decimal('amount', 12, 2);
-            $table->string('transaction_id')->nullable(); // ID unik dari gateway (misalnya order_id Midtrans)
-            $table->enum('status', ['pending', 'paid', 'failed', 'expired', 'refunded'])->default('pending');
-            $table->string('payment_url')->nullable(); // URL pembayaran (dari gateway)
+            $table->string('transaction_id')->nullable();
+            $table->enum('status', [
+                'PENDING',
+                'PAID',
+                'SETTLED',
+                'EXPIRED',
+                'UNKNOWN_ENUM_VALUE'
+            ])->default('PENDING');
+            $table->string('payment_url')->nullable();
             $table->dateTime('paid_at')->nullable();
             $table->timestamps();
         });

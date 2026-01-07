@@ -39,6 +39,7 @@ class ProfileController extends Controller
             'id_number'     => $request->id_number,
             'date_of_birth' => $request->date_of_birth,
             'gender'        => $request->gender,
+            'address'       => $request->address
         ]);
         return back()->with('success', 'Profil berhasil diperbarui');
     }

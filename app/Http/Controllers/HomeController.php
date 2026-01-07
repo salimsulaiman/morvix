@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
+use App\Models\City;
 use App\Models\Vehicle;
 use App\Models\VehicleModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -13,39 +16,60 @@ class HomeController extends Controller
      */
     public function index()
     {
+
+        $cities = City::pluck('name', 'id');
+        $now = now();
+
         $vehicles = Vehicle::with([
             'vehicleModel.brand',
             'images',
             'location',
-            'bookings',
-        ])->where('status', 'available')->get();
+        ])
+            ->where('status', 'available')
+            ->whereDoesntHave('bookings', function ($q) use ($now) {
+                $q->where('rental_status', 'ongoing')
+                    ->where('start_date', '<=', $now)
+                    ->where('end_date', '>=', $now);
+            })
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
 
         $motorcycles = Vehicle::with([
             'vehicleModel.brand',
             'images',
             'location',
-            'bookings',
-        ])->whereHas('vehicleModel', function ($query) {
-            $query->where('type', 'motorcycle');
-        })->inRandomOrder()
-            ->take(4)->where('status', 'available')
+        ])
+            ->whereHas('vehicleModel', fn($q) => $q->where('type', 'motorcycle'))
+            ->where('status', 'available')
+            ->whereDoesntHave('bookings', function ($q) use ($now) {
+                $q->where('rental_status', 'ongoing')
+                    ->where('start_date', '<=', $now)
+                    ->where('end_date', '>=', $now);
+            })
+            ->inRandomOrder()
+            ->take(4)
             ->get();
 
         $cars = Vehicle::with([
             'vehicleModel.brand',
             'images',
             'location',
-            'bookings',
-        ])->whereHas('vehicleModel', function ($query) {
-            $query->where('type', 'car');
-        })->inRandomOrder()
-            ->take(4)
+        ])
+            ->whereHas('vehicleModel', fn($q) => $q->where('type', 'car'))
             ->where('status', 'available')
+            ->whereDoesntHave('bookings', function ($q) use ($now) {
+                $q->where('rental_status', 'ongoing')
+                    ->where('start_date', '<=', $now)
+                    ->where('end_date', '>=', $now);
+            })
+            ->inRandomOrder()
+            ->take(4)
             ->get();
 
         return view('pages.home.index', [
             'title' => 'Home'
-        ], compact('vehicles', 'motorcycles', 'cars'));
+        ], compact('cities', 'vehicles', 'motorcycles', 'cars'));
     }
 
     /**

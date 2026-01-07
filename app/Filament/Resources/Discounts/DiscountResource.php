@@ -42,6 +42,26 @@ class DiscountResource extends Resource
         ];
     }
 
+    public static function canCreate(): bool
+    {
+        return currentUser()->role === 'admin';
+    }
+
+    public static function canEdit($record): bool
+    {
+        return in_array(currentUser()->role, ['admin', 'operator']);
+    }
+
+    public static function canDelete($record): bool
+    {
+        return currentUser()->role === 'admin';
+    }
+
+    public static function canView($record = null): bool
+    {
+        return true;
+    }
+
     public static function getPages(): array
     {
         return [

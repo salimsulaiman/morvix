@@ -35,11 +35,21 @@
             </div>
 
             <div class="hidden lg:flex items-center gap-6">
+                @php
+                    $hasPendingPayment = \App\Models\Booking::whereHas('payment', function ($q) {
+                        $q->where('status', 'PENDING');
+                    })->exists();
+
+                    $isActive = request('status') === 'PENDING' || $hasPendingPayment;
+                @endphp
+
                 <span class="hover:text-lime-400 transition-colors cursor-pointer">
                     <i data-feather="heart" class="w-5 h-5"></i>
                 </span>
 
-                <span class="relative hover:text-lime-400 transition-colors cursor-pointer">
+
+                <a href="{{ route('orders.index', ['status' => 'PENDING']) }}"
+                    class="relative hover:text-lime-400 transition-colors cursor-pointer">
                     <i data-feather="shopping-cart" class="w-5 h-5"></i>
 
                     @if (session('cart_count', 0) > 0)
@@ -48,7 +58,12 @@
                             {{ session('cart_count') }}
                         </span>
                     @endif
-                </span>
+
+                    @if ($isActive)
+                        <span class="absolute top-0 -right-1 w-2 h-2 bg-lime-600 rounded-full animate-pulse">
+                        </span>
+                    @endif
+                </a>
             </div>
 
         </div>
@@ -160,19 +175,19 @@
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open"
                                 class="w-10 h-10 rounded-full bg-lime-600 text-white font-semibold flex items-center justify-center select-none cursor-pointer">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                {{ strtoupper(substr(currentUser()->name, 0, 1)) }}
                             </button>
 
                             <div x-show="open" @click.outside="open = false"
                                 class="absolute right-0 mt-2 w-60 bg-white overflow-hidden shadow-lg border rounded-lg py-2 z-50">
 
-                                <a href="{{ route('profile.detail') }}"
+                                <a href="{{ route('profile.index') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm flex items-center gap-2">
                                     <i data-feather="user" class="w-4 h-4"></i>
                                     Profile
                                 </a>
 
-                                <a href="#"
+                                <a href="{{ route('orders.index') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm flex items-center gap-2">
                                     <i data-feather="clipboard" class="w-4 h-4"></i>
                                     My Orders

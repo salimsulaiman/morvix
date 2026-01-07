@@ -3,12 +3,16 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AccountSetting;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MotorcycleController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderGuideController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimController;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +36,35 @@ Route::middleware('auth.redirect')->group(function () {
     Route::get('/profile/account-setting', [AccountSetting::class, 'index'])->name('profile.account-setting.index');
     Route::put('/profile/account-setting/password/update', [AccountSetting::class, 'updatePassword'])->name('profile.account-setting.password.update');
 
+    Route::post('/booking/{vehicle}', [BookingController::class, 'store'])
+        ->name('booking.store');
+
+    Route::get(
+        '/booking/{booking:booking_code}/payment',
+        [PaymentController::class, 'show']
+    )->name('booking.payment');
+
+
+    Route::post('/bookings/{booking}/pay', [PaymentController::class, 'pay'])->name('bookings.pay');
+
+
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+
+    Route::get('/payment/success', [PaymentStatusController::class, 'success'])
+        ->name('payment.success');
+
+    Route::get('/payment/failed', [PaymentStatusController::class, 'failed'])
+        ->name('payment.failed');
+
+    Route::get('/orders', [OrderController::class, 'index'])
+        ->name('orders.index');
+
+    Route::get('/orders/{bookingCode}', [OrderController::class, 'show'])
+        ->name('orders.show');
+
+    Route::post('/orders/{booking}/cancel', [OrderController::class, 'cancel'])
+        ->name('orders.cancel');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
